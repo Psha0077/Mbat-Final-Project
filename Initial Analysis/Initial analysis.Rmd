@@ -1,0 +1,146 @@
+---
+title: "Membership Report Initial Summary"
+author: "Akanksha Shridharani and Pranav Shankaran"
+date: "2024-07-28"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: spacelab
+---
+
+```{r cars, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(visdat)
+```
+
+# Initial Data Analysis
+
+## Overview of the Data
+
+```{r ida, warning=FALSE, message=FALSE}
+member <- read_csv("July_24_Full member report.csv")
+glimpse(member)
+sapply(member, class)
+
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Load necessary library
+library(dplyr)
+library(kableExtra)
+# Create the data frame
+df <- data.frame(
+  Variable_Name = c("First Name", "Last Name", "Gender", "Birth Date", "Age",
+                     "Contact Job title", "Organization Name", "Membership Type",
+                     "Date joined", "Status", "Email", "Phone", "Postal Code",
+                     "State/Province", "Country", "Chapter", "Institution Type", 
+                     "Special Interests"),
+  Description = c("The first name of the member.", "The last name of the member.",
+                   "The gender of the member.", "The birth date of the member.",
+                   "The age of the member.", "The job title of the member within their organization.",
+                   "The name of the organization where the member is employed.",
+                   "The type of membership the member holds.", "The date when the member joined.",
+                   "The current status of the membership (e.g., current, expired).",
+                   "The email address of the member.", "The phone number of the member.",
+                   "The postal code of the member's address.", "The state or province of the member's address.",
+                   "The country of the member's address.", "The chapter or local group the member belongs to.",
+                   "The type of institution where the member is employed (e.g., Catholic School, Girl's School).",
+                   "The specific interests of the member related to their professional and personal development."),
+  Data_Type = c("Character", "Character", "Character", "Character", "Numeric",
+                "Character", "Character", "Character", "Character", "Character",
+                "Character", "Character", "Character", "Character", "Character",
+                "Character", "Character", "Character"),
+  Unique_Values = c(892, 1786, 3, 350, 57, 1177, 585, 5, 1040, 3, 2293, 1742, 404, 21, 9, 7, 43, 201),
+  stringsAsFactors = FALSE
+)
+
+kable(df, format = "markdown", col.names = c("Variable Name", "Description", "Data Type", "Unique Values"))
+
+```
+
+
+The dataset provided contains member information with 2,314 rows and 18 columns. The columns include various attributes such as names, demographic details, job titles, organizational affiliations, membership details, and contact information. Below is a detailed exploration and analysis of the dataset.
+
+We can see that most columns are of type character, with only the Age column being numeric.
+
+## Unique values in the data
+
+```{r ida-2, warning=FALSE, message=FALSE}
+# Unique values in each column
+sapply(member, function(x) length(unique(x)))
+
+```
+
+We calculate the number of unique values in each column using sapply with a custom function. This helps identify the diversity of data within each column, which can be useful for detecting potential categorical variables or issues like excessive duplication.
+
+
+## Duplicated Values
+
+```{r}
+# Count duplicate rows
+sum(duplicated(member))
+```
+
+In this case, there are 6 duplicate rows.
+
+## Missingness of the data
+
+```{r ida-3, warning=FALSE, message=FALSE}
+
+vis_dat(member)
+vis_miss(member)
+# Data types of each column
+
+
+```
+We use the visdat package to visualize the data types and missing values in the dataset.
+
+The vis_dat function provides a visual summary of the data types in each column.
+
+The vis_miss function generates a visualization of the missing values in the dataset.
+
+# Exploratory Data Analysis 
+
+## Plot of Missing Values by the type of variable
+
+```{r EDA, message=FALSE, warning=FALSE}
+
+library(dplyr)
+library(ggplot2)
+
+# Calculate the percentage of missing values for each variable
+missing_values <- member %>%
+  summarise_all(~ mean(is.na(.))) %>%
+  gather(key = "variable", value = "missing_pct")
+
+# Plot the missing values
+ggplot(missing_values, aes(x = reorder(variable, -missing_pct), y = missing_pct)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  coord_flip() +
+  ylab("Percentage of Missing Values") +
+  xlab("Variable") +
+  ggtitle("Missing Values by Variable")
+
+```
+
+## Correlation Plot
+
+```{r EDA-2, message=FALSE, warning=FALSE}
+numeric_data <- member %>% dplyr::select_if(is.numeric)
+
+# Compute correlation matrix
+cor_matrix <- cor(numeric_data, use = "complete.obs")
+
+# Plot the correlation matrix
+library(corrplot)
+corrplot(cor_matrix, method = "circle")
+
+```
+
+The corrplot function visualizes the correlation matrix. Given that there is only one numeric variable, the plot will indicate a perfect correlation (correlation coefficient = 1) of Age with itself.
+
+In summary, the dataset has a mix of character and numeric data, with Age being the only numeric column. There are some missing values and duplicate rows that need to be addressed. The visualisations provide a clear understanding of the data structure and missing value patterns. 
+
+Further analysis, such as imputation of missing data, handling duplicates, and exploring relationships between different categorical variables, will be required for a comprehensive understanding of the dataset.

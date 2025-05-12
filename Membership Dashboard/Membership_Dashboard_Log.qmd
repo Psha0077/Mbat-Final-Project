@@ -1,0 +1,107 @@
+---
+title: "Membership Dashboard log"
+format: html
+editor: visual
+---
+
+## Weekly Log - Membership Dashboard
+
+**Introduction**
+
+EducatePlus needs a Membership Dashboard with an overview of membership types, focusing on new members, canceled members, and expired members. This dashboard was designed to track membership targets and highlight any trends across different membership categories. The objective, as per the mentor's request, was to measure new, renewed, and lapsed memberships over specific periods.
+
+**Approach**
+
+To build the Membership Classification dashboard, we followed a structured process:
+1. Defining membership categories and key metrics (e.g., new members, canceled members, and expired members).
+2. Calculating the relevant metrics based on membership statuses and date ranges.
+3. Creating a clear visualization to track performance against the membership targets.
+
+**Step 1: Stakeholder Identification & Requirements Gathering**
+
+Based on the provided objective from the internship mentor, the key requirements were:
+- Measure new memberships in a specific period (e.g., all new members who joined from Jan 2024 to June 2024).
+- Measure renewed memberships in a specific period (e.g., memberships renewed in the same period).
+- Measure lapsed memberships (e.g., memberships that lapsed between Jan 2024 and June 2024).
+
+Stakeholders:
+- Memberships team for understanding the classification and target breakdown.
+- EducatePlus organization for overall tracking and reporting purposes.
+
+| Requirement/Metric    | Description                                                        |
+|-----------------------|--------------------------------------------------------------------|
+| **New Members**        | Shows the number of new members in the current year.              |
+| **Cancelled Members**  | Tracks the number of members who canceled in the current year.    |
+| **Expired Members**    | Displays the number of expired members during the given period.   |
+
+**Data Aggregation and Transformation**
+
+Once the data was cleaned, we aggregated key metrics such as:
+- **Total Members by Type**: Summarized membership data into categories (e.g., Corporate, Individual, International).
+- **New vs. Lapsed Members**: Calculated new members who joined in the current year and lapsed members whose memberships expired.
+- **Member Retention Rate**: Generated a retention rate by comparing renewed members to total membership numbers.
+
+These transformations allowed us to build more insightful visualizations that aligned with the organization’s key objectives.
+
+**Step 2: Dashboard**
+
+The dashboard was built based on the metrics above and the target percentages. The screenshot below shows the table structure with the calculated values for each membership category.
+
+![Image 1: Membership Classification by Membership Type](Images/Membership Classification by Membership Type.png)
+
+_Note: Null values have been excluded from the data displayed in this table._
+
+The following table represents the dashboard showing memberships classified by chapters. The metrics such as new members, canceled members, and expired members have been calculated for each chapter.
+
+![Image 2: Membership Classification by Chapter](Images/Membership Classification by Chapter.png)
+
+_Note: Null values have been excluded from the data displayed in this table._
+
+
+For the next visualisation, the objective was to analyze membership classifications based on different types, focusing on key metrics such as current members, new members, canceled members, and expired members with an inclusion of a date range control to enable our host mentor to visualise the data for the specified calendar year. 
+
+![Image 3: Membership Classification by Membership Type for a specific date range](Images/Membership Classification - Date Range Control.png)
+
+_Note: Null values have been excluded from the data displayed in this table._
+
+**Data Cleaning and Issues Encountered**
+
+During the development of the Membership Classification dashboard, several data quality and alignment issues were identified and addressed to ensure accurate reporting and analysis. The main challenges faced and resolutions applied are outlined below:
+
+### 4.1 Duplicate Values in Organization Names
+One of the initial issues discovered was the presence of duplicate values in the 'Organization Name' column. Multiple instances of the same organization appeared under different rows, which inflated the counts and skewed the membership data. To address this, all duplicate entries were removed to maintain data integrity and ensure unique organizational representation.
+
+### 4.2 Null Values in Critical Fields
+The dataset contained numerous null values, particularly in the 'Membership Type' and 'Chapter' fields. Since these fields are essential for classifying memberships and generating accurate reports, rows with null values were excluded from the final dashboard to ensure consistency in the data. This exclusion was necessary to avoid misrepresentation of memberships and maintain clean reporting.
+
+
+### 4.3 Membership Types and Full Members Discrepancy
+While the initial dataset included entries classified as 'Full Members', the client recently updated their classification system. As a result, we were required to display only the new membership types instead of outdated ones. The 'Full Members' category was no longer applicable, so these entries were removed or reclassified according to the client's updated schema.
+
+### 4.4 Discrepancies Between Google Sheet and CiviCRM Data
+A significant challenge was the mismatch between the membership data in our shared Google Sheet and the client's CiviCRM database. The counts and classifications of members, especially new and expired members, did not align between the two sources. To resolve this, a detailed report was created to highlight the discrepancies. The report allowed us to compare both datasets and adjust our data accordingly, ensuring that the final numbers in the dashboard matched the client's records.
+
+### New Members Count Adjustment
+
+Issue Identified:
+The mentor suggested that the previous method for counting new members was inaccurate, as it used the 'New' status for counting. However, this did not fully capture the members who joined within the current year but were not labeled as 'New.'
+
+Solution Implemented:
+To align the new member count with the mentor's feedback, we adjusted the calculation logic. Instead of counting members based on their 'New' status, we now include all members who joined during the current year, regardless of their current status. This ensures that the membership data reflects all new members from the beginning of the current year.
+
+###  Focus on Updated Membership Types
+
+During the dashboard development, our mentor advised that they had recently updated its membership classifications. As a result, we were asked to focus solely on the seven newly defined membership types, excluding any outdated categories.
+
+The updated membership types included in the dashboard are:
+
+- AU Corporate Membership
+- AU Regional Membership
+- NZ Corporate Membership
+- NZ Regional Membership
+- NZ Individual
+- NZ Regional Individual
+- Asia Regional Membership
+
+To reflect this change, we filtered the dataset and updated the visualisations to only show these seven membership types. This ensures that the dashboard aligns with the organisation’s current membership structure, providing more relevant insights for stakeholders.
+

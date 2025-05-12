@@ -1,0 +1,76 @@
+---
+title: "Members_Dashboard_Instruction_Manual"
+format: html
+editor: visual
+---
+
+## Instruction Manual; Members Dashboard
+
+## **Introduction**
+
+EducatePlus needs a dashboard to report the figures of their member numbers for the sake of their weekly and monthly reporting, keeping track of member-specific metrics.
+
+### Metrics Explained 
+
+![Image 1: Members Dashboard; Page 1](Images/members_pg1.png)
+
+![Image 2: Members Dashboard; Page 2](Images/members_pg2.png)
+
+The Members dashboard comprises multiple metrics shown either visually or numerically. Outlined below is an explanation of each metric, its purpose and insights gained.
+
+| Filter/Metric Title                 | Description                                                                           | Purpose                                                                                      | Set-up                                                                                                                                                                         |
+|------------------|------------------|------------------|------------------|
+| Date Range Filter                   | Allows you to select a specific period for which data is displayed.                   | To filter metrics and track performance over a specific time frame.                          | Data is filtered based on the selected start and end date from the available data points                                                                                       |
+| Chapter Filter                      | Filters membership data by geographic regions or chapters (e.g., VIC, NSW, QLD).      | To drill-down & analyze memberships based on regional participation and chapter performance. | Membership data is grouped by geographic chapters and filtered according to the selected chapter.                                                                              |
+| Country Filter                      | Filters data by the country of the members.                                           | To drill-down & provide insights on membership from different countries.                     | Filters data based on the country associated with each member profile.                                                                                                         |
+| Membership Type Filter              | Filters memberships by type (e.g., Individual, Corporate, Retired).                   | To track the performance of different membership categories.                                 | Membership data is categorized by type and filtered based on the selected membership category.                                                                                 |
+| Total Members                       | Displays the total number of members registered                                       | To provide an overall count of the registered members in the EducatePlus community.          | This metric is a count of all unique member IDs having Status New, Current or Grace and Contact Type is Individual.                                                            |
+| New (YTD)                           | Shows the number of new members registered year-to-date                               | To track how many new members have been added during the current year.                       | A distinct count of Contact IDs whose membership start dates matched those of the current year.                                                                                |
+| Expired                             | Displays the number of expired memberships                                            | To indicate the number of members whose membership has expired.                              | This metric is a count of all unique member IDs having Status Expired and Contact Type is Individual.                                                                          |
+| Growth (%)                          | Shows the percentage growth of members                                                | To track membership growth over a period of time.                                            | Formula - (Cumulative count of all members - Cumulative count of members till Dec 31st of the previous year)/(Cumulative count of members till Dec 31st of the previous year)  |
+| Age Distribution                    | Pie chart representing the age distribution of members                                | To understand the age demographics of the members.                                           | Groups members by age based on their date of birth and calculates the percentage of each group.                                                                                |
+| Gender (%)                          | Displays the gender breakdown of members                                              | To understand the gender distribution of the members.                                        | Distinct count of Contact ID split by gender and shown as a percentage                                                                                                         |
+| Historic Trend of New Members       | Line chart showing new members over time                                              | To identify trends in new member registrations over the years.                               | The metric tracks new members year-by-year by counting the new member registrations in each calendar year.                                                                     |
+| Our Members At A Glance             | Bar chart showing membership distribution by geographic chapters as a percentage      | To see the geographic breakdown of memberships.                                              | The data is filtered by member location, grouping them by state or region.                                                                                                     |
+| Membership Status                   | Pie chart showing the breakdown of membership statuses (e.g., corporate, individual). | To provide a quick view of the current distribution of membership types.                     | Member types are categorized at registration (corporate, individual, etc.), and calculated as percentages.                                                                     |
+| Membership by Institution Type      | Table listing the types of institutions members belong to                             | To see the types of institutions members are associated with.                                | Members are categorized by the institution they work for, and data is grouped to show the percentage from each type.                                                           |
+| Members by Institution Type (Graph) | Bar chart comparing institution types (e.g., CoEd schools, Boy's or Girls' schools)   | To visualize the institution types with the most member representation.                      | The number of members for each institution type is summed up and displayed as a percentage of the total.                                                                       |
+| Member Interests                    | Bar chart showing members' interests based on the 9 EducatePlus pillars.              | To display the areas members are most interested in.                                         | Data is collected as comma-separated values. These are then split into a cross-tabulation at the source in the Google Sheet. This is then aggregated as a percentage break-up. |
+
+: Table 1: Detailed Descriptions of each element of the Members Dashboard outlining its purpose and set-up.
+
+### Navigating to the Dashboard 
+
+**Step 1:** If the dashboard has been shared with you to access, open a new tab on Google Chrome
+
+**Step 2:** Search for "Google LookerStudio" and open the first link shown
+
+**Step 3:** This will navigate you to Lookerstudio and in the menu, select "Shared With Me"
+
+**Step 4:** Select the "EducatePlus Members Dashboard"
+
+**OR**
+
+Navigate to this [link](https://lookerstudio.google.com/reporting/04611dfb-c95e-4265-8f4f-f8cf401241de)
+
+### Maintenance (Edit Access Required)
+
+#### Updating Gowth Targets
+
+**Step 1:** Navigate to the Members Dashboard
+
+**Step 2:** Select the chart titled "New Memberships Vs. Target by Membership Type"
+
+**Step 3:** Navigate to the "Data" pane (On the right side of the screen)
+
+![](Images/data_pane.png){fig-align="left"}
+
+**Step 4:** Search for the calculate field titled "New Member Growth (11%)"
+
+**Step 5:** Hover over this calculated field and you will see "fx". This allows you to edit the formula
+
+**Step 6:** Once clicked, the formula to amend the growth target will pop-up
+
+![](Images/Growth_formula.png)
+
+**Step 7:** 1.11 is the multiplier (11% over the previous years' members). To edit the growth percentage, change the number. Eg: If growth percentage is 15%, the number to be edited is to be 1.15.

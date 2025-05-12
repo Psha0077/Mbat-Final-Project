@@ -1,0 +1,161 @@
+---
+title: "Events_Dashboard_log"
+author: "Pranav"
+format: html
+editor: visual
+---
+
+![](images/logo.jpeg){fig-align="left" width="268"}
+
+## Educate Plus - Events Dashboard Log
+
+```{r message=FALSE, warning=FALSE, echo=FALSE, eval=TRUE}
+library(tidyverse)
+library(kableExtra)
+```
+
+### Introduction
+
+EducatePlus, a professional body for Educational Advancement Professionals requires a dashboard to drive decision-making and reporting of the attended member for those events hosted by them in order to;
+
+-   **Monitor Member Engagement**: The dashboard will allow the organization to track the level of engagement by providing insights into how frequently members attend events. This can help identify which segments of members are actively participating and which may require more outreach or engagement efforts.
+
+-   **Evaluate Event Success**: By analyzing attendance across various events, EducatePlus can assess the performance and popularity of different types of events, helping them understand which topics or formats resonate most with members.
+
+-   **Identify Trends**: The dashboard will highlight attendance trends over time, such as seasonality, geographic participation, or member demographics that tend to engage more with certain events. This can inform future event planning.
+
+-   **Enhance Member Experience**: With access to detailed reports on member preferences and behavior, EducatePlus can tailor future events to better meet the needs and interests of its members, improving satisfaction and value.
+
+-   **Measure ROI**: By comparing attendance rates with event costs and resources, EducatePlus can measure the return on investment (ROI) of events, ensuring efficient allocation of funds and efforts.
+
+-   **Support Strategic Decisions**: The dashboard will provide key metrics and insights that can be used to inform the organization's strategic goals, including membership growth, retention efforts, and the development of educational programs that align with member interests.
+
+### Approach
+
+In order to build the events dashboard, followed a structured approach outlined below.
+
+**Step 1: Stakeholder Identification & Requirements Gathering**
+
+We sent out surveys to the EducatePlus team members to understand their reporting requirements in order to identify the relevant stakeholders and their different use cases. the relevant stakeholders include but are not limited to; Events team, Marketing team, Business Manager and the CEO.
+
+The purpose of the events dashboard as shared to us by the team is to see at a glance the number of attendees, for each event and revenue generated.
+
+**Additional Features:** Additionally, we have added in the following additional features for the dashboard to display to drive decision-making.
+
+-   **Registrations**: Displays the total number of registrations, which provides more context for comparing attendance.
+
+-   **% Attended**: Shows the percentage of attendees out of the total registrations, a useful metric for understanding engagement.
+
+-   **Pending Revenue**: Displays revenue that is yet to be collected, giving a more detailed financial picture.
+
+-   **Revenue in Multiple Currencies (AUD, NZD, USD)**: Instead of just showing total revenue, the dashboard breaks it down by currency, which is valuable for international financial tracking.
+
+-   **Gender Ratio**: This demographic breakdown helps the marketing and events team understand the gender distribution of attendees.
+
+-   **Attendee Break-up**: Visualizes the types of attendees (e.g., Member, Non-Member, etc.), useful for stakeholder segmentation.
+
+-   **Chapter-wide Events & Revenue**: A breakdown of revenue and registrations by chapter, useful for understanding regional performance.
+
+-   **YoY Events & Registrations**: Year-over-year comparison helps track growth or decline in event participation.
+
+-   **Monthly Events Break-up**: Shows the distribution of events and registrations across months, aiding in trend analysis.
+
+-   **Top 10 Events by Registrations/Revenue**: Highlights top-performing events, valuable for both events and marketing teams to analyze success.
+
+-   **Participant Information Table**: Includes participant names and emails, helpful for follow-up actions, potentially for both the events and marketing teams.
+
+**Step 2:** **Data Preparation**
+
+Having understood the requirements and relevant stakeholders, we set out to build the dashboard having received the green light regarding the metrics and format in which they were to be presented.
+
+The raw data extracted contains the following columns:
+
+```{r}
+
+# Load the knitr library
+library(knitr)
+
+# Create a data frame with column names and descriptions
+column_data <- data.frame(
+  Column_Heading = c("Participant Name", "First Name", "Last Name", "Gender", 
+                     "Contact Job Title", "Organization Name", "Contact ID", 
+                     "Email", "City", "State/Province", "Country", "ID", 
+                     "Participant ID", "Event ID", "Status", "Role", "Fee Level", 
+                     "Participant Fee", "Registration Date", "Total Paid", 
+                     "Event Type", "Event Start Date", "Event End Date", "Chapter", 
+                     "Institution Type", "Participant Status", "Are You a Sponsor?", 
+                     "Half Day Workshops", "Full Day Workshop - Masterclass", 
+                     "Welcome Drinks Day 1", "Gala Dinner", "Awards Luncheon", 
+                     "Gala Dinner Day 3", "Which Topics Interest You for This Event?"),
+  
+  Description = c("Full name of the event participant", "Participant's first name", 
+                  "Participant's last name", "Participant's gender identification", 
+                  "Job title of the participant", "Name of the organization the participant is associated with", 
+                  "Unique identifier for the participant's contact details", 
+                  "Email address of the participant", "City where the participant is based", 
+                  "State or province of the participant", "Country of the participant", 
+                  "General ID of the participant record", "Unique identifier for the participant within the event", 
+                  "Unique identifier for the event the participant is registered for", 
+                  "Registration status of the participant (e.g., Registered, Attended)", 
+                  "Role of the participant in the event (e.g., Attendee, Speaker)", 
+                  "Category of fees applicable to the participant", 
+                  "Fee paid by the participant for the event", 
+                  "Date when the participant registered for the event", 
+                  "Total amount paid by the participant", "Type of the event (e.g., Workshop, Conference)", 
+                  "Date when the event starts", "Date when the event ends", 
+                  "Regional chapter or group associated with the event", 
+                  "Type of institution the participant represents (e.g., School, University)", 
+                  "Membership status of the participant (e.g., Member, Non-Member)", 
+                  "Indicates if the participant is an event sponsor", 
+                  "Indicates participation in half-day workshops", 
+                  "Indicates participation in full-day workshops or masterclasses", 
+                  "Indicates attendance at welcome drinks on Day 1 of the event", 
+                  "Indicates attendance at the gala dinner", 
+                  "Indicates attendance at the awards luncheon", 
+                  "Indicates attendance at the gala dinner on Day 3", 
+                  "Topics of interest specified by the participant for the event")
+)
+
+# Display the data frame as a responsive kable object
+kable(column_data, col.names = c("Column Heading", "Description"), 
+      caption = "Data Dictionary; Event Attendees Dataset") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+                full_width = F, position = "left")
+```
+
+**Step 4: Dashboard Building**
+
+Through an iterative process involving building prototypes of the dashboard and having repeated feedback sessions with our relevant stakeholders, we have built the Events dashboard to show the following metrics and information. Shown below is the final version of the Events Dashboard:\
+
+![Events Dashboard - pg1](images/Events-1.png)
+
+![Events Dashboard - Pg2](images/Events-2.png)
+
+**Step 4: Testing**
+
+Having built the dashboard, the
+
+## Dashboard User Guide
+
+The following guidelines help stakeholders navigate and utilise the Events Dashboard effectively:
+
+-   **Date Range Control**: Users can select custom date ranges to filter event attendance and revenue metrics based on specific time periods.
+-   **Event Type Filter**: This allows users to focus on specific types of events, such as conferences, workshops, or webinars.
+-   **Chapter-Wide Analysis**: To view regional data, select a specific chapter from the filter dropdown. This will display the events, revenue, and attendance specific to that chapter.
+-   **Top Events by Revenue**: Use this feature to identify high-performing events and assess their financial contribution.
+
+These tools are designed to give stakeholders the flexibility to analyse the data according to their specific needs.
+
+**Data Cleaning and Issues Encountered**
+
+During the development of the Events dashboard, several data quality and alignment issues were identified and addressed to ensure accurate reporting and analysis. The main challenges faced and resolutions applied are outlined below:
+
+### Duplicate Values in Organization Names
+
+One of the initial issues discovered was the presence of duplicate values. Multiple instances of the same organization appeared under different rows, which inflated the counts and skewed the data. To address this, all duplicate entries were removed to maintain data integrity and ensure unique organizational representation.
+
+### Limitation in Comparing Event Registrations for Current Year vs. Previous Year
+
+Our mentor requested that we perform a direct comparison of event registrations between the current year and the previous year, visualizing the changes in a chart. Looker Studio does not support advanced date range comparison features necessary for directly comparing registrations between specific years.
+
+To address this, we compared the Year-over-Year (YoY) event data by calculating the number of events and total registrations to date. While not a direct comparison, this approach still highlights trends in event growth and registration performance.

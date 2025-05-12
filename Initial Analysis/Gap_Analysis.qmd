@@ -1,0 +1,154 @@
+---
+title: "Gap Analysis"
+format: html
+editor: visual
+---
+
+![](Images/logo.jpeg){fig-align="left"}
+
+## Gap Analysis
+
+**Introduction**
+
+Educate Plus (The organization) is a membership organization for professionals working in the education sector, primarily in Australia and New Zealand. The organization supports individuals involved in areas such as admissions, alumni and community relations, fundraising, and marketing and communications within educational institutions. Educate Plus provides training, networking opportunities, and resources to help professionals enhance their skills and stay up-to-date with industry trends.
+
+Consisting of a database of over two thousand members across schools and colleges, universities, professional training institutes and consultancies associated with the education sector, Educate Plus is looking to leverage their membership, billing and events attendance data into actionable insights.
+
+**Objective**
+
+The objective of this report is to provide a gap analysis is to identify the differences between the current reporting framework and the desired framework of the organization. This report aims to understand the limitations of the current reporting framework and will outline proposed solutions to bridge the gap to fulfill the reporting needs of the organization.
+
+**Current System Analysis**
+
+![Figure 1: Current Reporting Framework](Images/crf.png)
+
+The current reporting framework involves the use of Google sheets that have been manually entered into the CRM platform CiviCRM. This is then sent to a Google Sheet acting as a staging dashboard to prepare the data into a format that can be visualized. VIsualization is done using Google LookerStudio.
+
+The current reporting dashboard can be seen in figures 2 and 3.
+
+![Figure 2: Current Dashboard](Images/Current_Dashboard_1.png)
+
+![Figure 3: Current Dashboard](Images/current_dashboard_2.png)
+
+As can be seen from the dashboard diagrams, we see inherent strengths and weaknesses. The objectives of organization's needs can be seen as follows: \
+
+| Sl. No.  | Requirement                                    | Reason                                                                                                                               |
+|-----|----------------------------------|----------------------------------|
+|          | Members By Membership Type                     | Helps track the distribution and popularity of different membership categories, guiding membership strategy and resource allocation. |
+|          | New Member Numbers                             |  Indicates the success of recruitment efforts and the organization's growth potential.                                               |
+|          | Lapsed Members                                 | Identifies member retention challenges, enabling targeted re-engagement strategies.                                                  |
+|          | Member Numbers to Budget                       | Monitors financial health by comparing actual membership numbers against budgeted targets.                                           |
+|          | Year on Year Growth (%)                        | Assesses the organization's overall growth, highlighting trends and opportunities for expansion.                                     |
+|          | Membership By Gender                           | Ensures diversity and inclusivity within the membership base, informing targeted outreach efforts.                                   |
+|          | Membership by Age                              | Provides insights into the demographic distribution, helping tailor programs and services to different age groups.                   |
+|          | Membership by Year of Joining                  |  Tracks membership longevity and trends over time, helping with retention and engagement strategies.                                 |
+|          | Membership by Location, Chapter and Country    | Supports regional growth strategies by identifying geographic distribution and concentration of members.                             |
+|          | Membership by Institution Type and School Type | Ensures the organization serves a broad spectrum of educational institutions, guiding marketing and service delivery.                |
+|          | Membership by Interests                        | Enables personalized engagement and programming by aligning offerings with member interests.                                         |
+
+: Table 1: Members Dashboard requirements for Educate Plus
+
+As can be seen, the current dashboard meets the following requirements;
+
+-   **Members By Membership Type**:
+
+    -   The dashboard shows membership by type (e.g., Corporate, Individual), fulfilling the need to track membership distribution by different types.
+
+-   **New Member Numbers**:
+
+    -   The "New Members by Type" section lists the count of new members by chapter, satisfying the requirement to track the number of new members.
+
+-   **Membership by Chapter and Country**:
+
+    -   The dashboard visualizes "Membership % by Chapter" and also includes a map showing membership by country, satisfying the need for tracking membership by location, chapter, and country.
+
+-   **Membership by Institution Type and School Type**:
+
+    -   The "Membership by Institution Type" section fulfills the need to track members by different institution and school types.
+
+It does not however shed light on the following metrics:
+
+-   Lapsed Members
+
+-   Member Numbers to Budget
+
+-   Year on Year Growth (%)
+
+-   Membership by Gender
+
+-   Membership by Age
+
+-   Membership by Year of Joining
+
+-   Membership by Interests
+
+In order to overcome these gaps, we suggested multiple solutions in the form of dashboards namely;
+
+-   **Members Dashboard**: To provide a comprehensive view of overall member metrics, including membership type, new and lapsed members, and year-on-year growth.
+
+-   **Membership Dashboard**: To capture detailed demographic and geographic data, such as gender, age, location, and institutional affiliation, allowing for targeted engagement and growth strategies.
+
+-   **Events Dashboard**: To track member interests and engagement through events, helping tailor offerings and increase member satisfaction and retention.
+
+**Proposed Solutions**
+
+In the proposed solutions, each dashboard will focus on different aspects of the organization's needs, ensuring that all critical metrics are adequately covered:
+
+1.  **Members Dashboard**:
+
+    -   **Key Metrics and KPIs**:
+
+        -   **Members By Membership Type**: Continues to track the distribution of members across various membership categories.
+
+        -   **New Member Numbers**: Provides detailed insights into new member acquisition across chapters.
+
+        -   **Lapsed Members**: Introduces tracking of members who have lapsed, allowing for targeted re-engagement strategies.
+
+        -   **Member Numbers to Budget**: Tracks membership numbers against budget targets to ensure financial goals are being met.
+
+        -   **Year on Year Growth (%)**: Monitors the annual growth rate of members, helping to identify trends and opportunities.
+
+        -   **Membership by Gender**: Adds a diversity metric, essential for tracking gender distribution and ensuring inclusivity.
+
+        -   **Membership by Age**: Helps understand the age demographics within the membership, allowing for age-specific programming.
+
+2.  **Membership Dashboard**:
+
+    -   **Key Metrics and KPIs**:
+
+        -   **Membership by Year of Joining**: Tracks when members joined, helping to assess retention and engagement over time.
+
+        -   **Membership by Location, Chapter, and Country**: Provides a more granular view of geographic distribution, aiding regional strategy development.
+
+        -   **Membership by Institution Type and School Type**: Enhances understanding of the types of institutions represented, guiding service offerings.
+
+        -   **Membership by Interests**: Enables personalization by aligning organizational offerings with the specific interests of members.
+
+3.  **Events Dashboard** (if applicable):
+
+    -   **Key Metrics and KPIs**:
+
+        -   **Event Participation by Member Type**: Tracks engagement in events based on member type.
+
+        -   **Event Satisfaction Scores**: Measures member satisfaction with events, helping to improve future offerings.
+
+        -   **Event Return on Investment (ROI)**: Assesses the financial and engagement impact of events, ensuring resources are well spent.
+
+**Implementation Plan**
+
+To implement the proposed dashboard solutions for Educate Plus, we will follow a structured approach to ensure each dashboard meets the organization's needs effectively.
+
+First, we will build a dashboard wireframe, which will serve as a visual blueprint outlining the layout and data visualization for each dashboard. This initial design will then be shared with the organization to gather their feedback and ensure alignment with their expectations and requirements.
+
+Once we receive feedback, the next step involves sharing the necessary columns and data points with the third-party IT team responsible for building the new dashboards. This collaboration ensures that the technical foundation is correctly set up in LookerStudio, aligning with the organization's data structure.
+
+Following the construction phase, we will proceed to build each dashboard in LookerStudio, translating the wireframe design into fully functional, interactive dashboards. Post-development, we will engage in another round of feedback with the organization, allowing them to review the dashboards and suggest any necessary adjustments.
+
+After implementing the feedback, we will conduct thorough testing of each dashboard. This step is crucial to ensure that the data visualizations accurately reflect the organization's data and that all numbers match up across different dashboards. Finally, once all testing is complete and the dashboards are validated, we will proceed to launch each dashboard, making them accessible for use by Educate Plus to support their strategic and operational objectives.
+
+**Conclusion**
+
+**\
+** This gap analysis highlights the critical areas where the current reporting framework for Educate Plus falls short and proposes comprehensive solutions to bridge these gaps. The current dashboard, while covering some essential metrics, lacks depth in areas such as member retention, demographic insights, and year-on-year growth tracking. By implementing the proposed Members Dashboard, Membership Dashboard, and Events Dashboard, Educate Plus will gain a holistic view of its membership data, enabling more informed decision-making and strategic planning.
+
+The proposed implementation plan ensures a methodical approach to developing these dashboards, starting with wireframes, gathering feedback, and involving a third-party IT team to ensure technical accuracy. The iterative process of building, testing, and refining these dashboards will culminate in a suite of tools that not only meet the organization's current needs but also provide a robust foundation for future growth. These dashboards will empower Educate Plus to leverage its data effectively, driving member engagement, optimizing resource allocation, and ultimately fulfilling its mission to support professionals in the education sector.

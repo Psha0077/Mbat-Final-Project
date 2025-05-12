@@ -1,0 +1,453 @@
+---
+title: "rstuff"
+format: html
+editor: visual
+---
+
+## Segmentation
+
+**Frequent Participants** - Thank you for being such an active participant! We value your commitment and are excited to offer you early access to our upcoming exclusive event.
+
+**Moderately Active** - We’ve noticed your involvement, and we think you’d love some of our upcoming events! Here are a few tailored just for you.
+
+**Inactive/Low engagement** - We’ve missed you at our recent events! Here's a special offer to help you re-engage and take advantage of all the opportunities we provide.
+
+```{r echo=FALSE, eval=TRUE}
+library(tidyverse)
+```
+
+```{r echo=FALSE, eval=TRUE}
+
+events <- read.csv("Report_20240922-2320.csv")
+```
+
+```{r}
+# Load necessary libraries
+library(dplyr)
+
+# Assuming your dataset is called 'events'
+
+# Group by Participant.Name and Status
+segmentation <- events %>%
+  group_by(Participant.Name, Email) %>%
+  summarize(
+    total_registered = sum(Status == "Registered"),
+    total_attended = sum(Status == "Attended"),
+    total_pending = sum(Status == "Pending (pay Later)")
+  )
+
+# View the segmentation results
+print(segmentation)
+
+```
+
+```{r}
+
+# Load necessary libraries
+library(dplyr)
+
+# Assuming your dataset is 'events'
+
+# Step 1: Calculate total number of registrations for each participant
+registration_counts <- events %>%
+  group_by(Participant.Name) %>%
+  summarize(total_registered = sum(Status == "Registered"))
+
+# Step 2: Define the thresholds for segmentation
+# Get the quantiles for 80% (top 20% threshold) and 50% (median for mid-range)
+threshold_frequent <- quantile(registration_counts$total_registered, 0.80)
+threshold_moderate <- quantile(registration_counts$total_registered, 0.50)
+
+# Step 3: Classify participants into segments based on their registration counts
+segmentation <- registration_counts %>%
+  mutate(
+    segment = case_when(
+      total_registered > threshold_frequent ~ "Frequent Participants",
+      total_registered > threshold_moderate & total_registered <= threshold_frequent ~ "Moderately Active",
+      TRUE ~ "Inactive/Low-Engaged"
+    )
+  )
+
+# View the segmentation results
+print(segmentation)
+
+```
+
+```{r}
+# Count the number of participants in each segment
+segment_counts <- segmentation %>%
+  group_by(segment) %>%
+  summarize(count = n())
+
+# View the counts
+print(segment_counts)
+
+```
+
+```{r}
+# Load necessary library
+library(dplyr)
+
+# Convert 'Event.Start.Date' to Date type if not already
+events$Event.Start.Date <- as.Date(events$Event.Start.Date)
+
+# Get today's date
+current_date <- Sys.Date()
+
+# Define the cutoff date (2 years ago from today)
+cutoff_date <- current_date - 2*365  # 2 years back
+
+# Filter events for the last 2 years
+events_last_2_years <- events %>%
+  filter(Event.Start.Date >= cutoff_date)
+
+# Step 1: Calculate total number of events (any status) per participant over the last 2 years
+participation_last_2_years <- events_last_2_years %>%
+  group_by(Participant.Name) %>%
+  summarize(total_events = n())  # Count all events for each member
+
+# Step 2: Calculate the mean and median of total events
+average_stats <- participation_last_2_years %>%
+  summarize(
+    mean_events = mean(total_events),
+    median_events = median(total_events)
+  )
+
+# View the mean and median statistics
+print(average_stats)
+
+```
+
+```{r}
+
+# Load necessary library
+library(dplyr)
+
+# Convert 'Event.Start.Date' to Date type if not already
+events$Event.Start.Date <- as.Date(events$Event.Start.Date)
+
+# Get today's date
+current_date <- Sys.Date()
+
+# Define the cutoff date (2 years ago from today)
+cutoff_date <- current_date - 2*365  # 2 years back
+
+# Filter events for the last 2 years
+events_last_2_years <- events %>%
+  filter(Event.Start.Date >= cutoff_date)
+
+# Step 1: Calculate total number of events (any status) per participant over the last 2 years
+participation_last_2_years <- events_last_2_years %>%
+  group_by(Participant.Name) %>%
+  summarize(total_events = n())  # Count all events for each member
+
+# Step 2: Calculate the mean of total events
+mean_events <- mean(participation_last_2_years$total_events)
+
+# Step 3: Segment the members based on their total event participation
+participation_last_2_years <- participation_last_2_years %>%
+  mutate(segment = case_when(
+    total_events > mean_events + 1 ~ "Frequent Participants",
+    total_events >= mean_events - 1 & total_events <= mean_events + 1 ~ "Moderately Active",
+    total_events < mean_events - 1 ~ "Inactive/Low-Engaged"
+  ))
+
+# View the segmented data
+print(participation_last_2_years)
+
+# Step 4: Count the number of members in each segment
+segment_counts <- participation_last_2_years %>%
+  group_by(segment) %>%
+  summarize(count = n())
+
+# View the counts for each segment
+print(segment_counts)
+
+```
+
+```{r}
+
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+
+# Assuming your dataset is called 'events'
+
+# Step 1: Calculate total number of events (regardless of status) per participant over the last 2 years
+participation_last_2_years <- events %>%
+  filter(as.Date(Event.Start.Date) >= Sys.Date() - 365 * 2) %>%  # Filter last 2 years
+  group_by(Participant.Name) %>%
+  summarize(
+    total_events = sum(Status %in% c("Registered", "Attended", "Pending (pay Later)"))  # Combine statuses
+  )
+
+# Step 2: Normalize the data (scale the total events)
+scaled_participation <- scale(participation_last_2_years$total_events)
+
+# Step 3: Perform k-means clustering with 3 clusters
+set.seed(123)  # Set seed for reproducibility
+kmeans_result <- kmeans(scaled_participation, centers = 3, nstart = 20)
+
+# Step 4: Add the cluster assignment to the original data
+participation_last_2_years$cluster <- kmeans_result$cluster
+
+# View the clustered data
+print(participation_last_2_years)
+
+# Step 5: Print out cluster centers
+print(kmeans_result$centers)
+
+# Step 6: Label clusters based on their characteristics
+cluster_summary <- participation_last_2_years %>%
+  group_by(cluster) %>%
+  summarize(
+    mean_total_events = mean(total_events),
+    count = n()
+  )
+
+# View the summary of clusters
+print(cluster_summary)
+
+# Step 7: Visualize the clusters
+ggplot(participation_last_2_years, aes(x = total_events, fill = factor(cluster))) +
+  geom_histogram(binwidth = 1, color = "black", alpha = 0.7) +
+  labs(title = "K-means Clustering of Participants by Total Event Participation", 
+       x = "Total Event Participation", y = "Count", fill = "Cluster") +
+  theme_minimal() +
+  scale_fill_manual(values = c("lightblue", "lightgreen", "salmon"))
+
+```
+
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+
+# Filter the dataset to exclude email IDs containing 'educateplus'
+events_filtered <- events %>%
+  filter(!grepl("educateplus", Email, ignore.case = TRUE))
+
+# Step 2: Calculate total number of events (regardless of status) per participant over the last 2 years
+participation_last_2_years <- events_filtered %>%
+  filter(as.Date(Event.Start.Date) >= Sys.Date() - 365 * 2) %>%  # Filter last 2 years
+  group_by(Participant.Name) %>%
+  summarize(
+    total_events = sum(Status %in% c("Registered", "Attended", "Pending (pay Later)"))  # Combine statuses
+  )
+
+# Step 3: Normalize the data (scale the total events)
+scaled_participation <- scale(participation_last_2_years$total_events)
+
+# Step 4: Perform k-means clustering with 3 clusters
+set.seed(123)  # Set seed for reproducibility
+kmeans_result <- kmeans(scaled_participation, centers = 3, nstart = 20)
+
+# Step 5: Add the cluster assignment to the original data
+participation_last_2_years$cluster <- kmeans_result$cluster
+
+# Step 6: Label clusters based on their characteristics
+cluster_summary <- participation_last_2_years %>%
+  group_by(cluster) %>%
+  summarize(
+    mean_total_events = mean(total_events),
+    count = n()
+  )
+
+print(participation_last_2_years)
+
+# Print the summary of clusters
+print(cluster_summary)
+
+# Step 7: Create a scatter plot with cluster centers highlighted
+ggplot(participation_last_2_years, aes(x = total_events, y = cluster, color = factor(cluster))) +
+  geom_point(size = 3, alpha = 0.7) +
+  geom_point(data = cluster_summary, aes(x = mean_total_events, y = cluster), 
+             color = "black", size = 4, shape = 3) +  # Cluster centers in black cross
+  labs(title = "K-means Clustering of Participants by Total Event Participation", 
+       x = "Total Event Participation", y = "Cluster", color = "Cluster") +
+  theme_minimal() +
+  scale_color_manual(values = c("red", "blue", "green"))  # Customize cluster colors
+
+```
+
+```{r}
+
+library(readxl)
+
+data <- read_excel("total_registrations.xlsx")
+
+
+
+```
+
+Percentile Calculation
+
+```{r}
+
+# Load necessary library
+library(dplyr)
+
+# Define the percentile function
+calculate_percentile <- function(data_column, percentile) {
+  # Use the quantile function to get the required percentile
+  result <- quantile(data_column, probs = percentile)
+  return(result)
+}
+
+# Example usage:
+# Assuming 'data' contains your 'Total Registrations (3years)' column
+total_registrations <- data$`Total Registrations (3years)`
+
+# Calculate percentiles
+top_5_percentile <- calculate_percentile(total_registrations, 0.95)
+bottom_30_percentile <- calculate_percentile(total_registrations, 0.30)
+
+# Categorize participants
+data$Engagement_Category <- ifelse(
+  total_registrations >= top_5_percentile, "Top 5%",
+  ifelse(total_registrations <= bottom_30_percentile, "Bottom 30%", "Middle 65%")
+)
+
+# Count how many fall into each category
+engagement_counts <- table(data$Engagement_Category)
+
+# Create a summary table with thresholds and counts
+summary_table <- data.frame(
+  Category = c("Top 5%", "Middle 65%", "Bottom 30%"),
+  Threshold = c(top_5_percentile, NA, bottom_30_percentile),  # Use NA for middle
+  Count = c(engagement_counts["Top 5%"], engagement_counts["Middle 65%"], engagement_counts["Bottom 30%"])
+)
+
+# Print the summary table
+print(summary_table)
+
+
+```
+
+```{r}
+
+# Load necessary libraries
+library(dplyr)
+library(readr)  # Assuming you are using read_csv from readr package
+
+# Read the data
+data_w_chapter <- read_csv("total_wchapter.csv")
+
+# Calculate the range of Total Registrations grouped by Chapter
+registration_range <- data_w_chapter %>%
+  group_by(Chapter) %>%
+  summarize(
+    Min_Registrations = min(`Total Registrations (3years)`),
+    Max_Registrations = max(`Total Registrations (3years)`),
+    Range = Max_Registrations - Min_Registrations
+  )
+
+# Print the registration range
+print(registration_range)
+
+
+```
+
+```{r}
+
+# Load necessary libraries
+library(dplyr)
+library(readr)  # Assuming you are using read_csv from readr package
+
+# Read the data
+data_w_chapter <- read_csv("total_wchapter.csv")
+
+# Calculate the range of Total Registrations grouped by Chapter
+registration_summary <- data_w_chapter %>%
+  group_by(Chapter) %>%
+  summarize(
+    Min_Registrations = min(`Total Registrations (3years)`),
+    Max_Registrations = max(`Total Registrations (3years)`),
+    Range = Max_Registrations - Min_Registrations,
+    Low_Engagement_Count = sum(`Total Registrations (3years)` <= 20),
+    Moderate_Engagement_Count = sum(`Total Registrations (3years)` >= 21 & `Total Registrations (3years)` <= 35),
+    High_Engagement_Count = sum(`Total Registrations (3years)` >= 36)
+  )
+
+# Print the registration summary
+print(registration_summary)
+
+```
+
+```{r}
+
+# Load necessary libraries
+library(dplyr)
+library(readr)  # Assuming you are using read_csv from readr package
+
+# Read the data
+data_w_chapter <- read_csv("total_wchapter.csv")
+
+# Define the intervals for counting
+breaks <- seq(0, 50, by = 5)  # Adjust the upper limit as necessary
+labels <- paste(head(breaks, -1), tail(breaks, -1) - 1, sep = "-")
+
+# Count the number of participants in intervals of 5 registrations
+registration_counts <- data_w_chapter %>%
+  # Create intervals
+  mutate(Interval = cut(`Total Registrations (3years)`, breaks = breaks, labels = labels, right = FALSE)) %>%
+  group_by(Chapter, Interval) %>%
+  summarise(Participants = n(), .groups = 'drop') %>%
+  # If you want to ensure a complete range of intervals for each chapter
+  complete(Chapter, Interval, fill = list(Participants = 0))
+
+# Print the registration counts in intervals
+print(registration_counts)
+
+
+```
+
+```{r}
+
+# Load necessary libraries
+library(dplyr)
+library(readr)  # Assuming you are using read_csv from readr package
+library(tidyr)  # For pivot_wider
+
+# Read the data
+data_w_chapter <- read_csv("total_wchapter.csv")
+
+# Define the intervals for counting
+breaks <- seq(0, 50, by = 5)  # Adjust the upper limit as necessary
+labels <- paste(head(breaks, -1), tail(breaks, -1) - 1, sep = "-")
+
+# Count the number of participants in intervals of 5 registrations
+registration_counts <- data_w_chapter %>%
+  # Create intervals
+  mutate(Interval = cut(`Total Registrations (3years)`, breaks = breaks, labels = labels, right = FALSE)) %>%
+  group_by(Chapter, Interval) %>%
+  summarise(Participants = n(), .groups = 'drop') %>%
+  # Ensure a complete range of intervals for each chapter
+  complete(Chapter, Interval, fill = list(Participants = 0))
+
+# Convert to wide format
+registration_counts_wide <- registration_counts %>%
+  pivot_wider(names_from = Interval, values_from = Participants, values_fill = list(Participants = 0))
+
+# Calculate the range (Min, Max, Range) for each chapter
+registration_range <- data_w_chapter %>%
+  group_by(Chapter) %>%
+  summarize(
+    Min_Registrations = min(`Total Registrations (3years)`),
+    Max_Registrations = max(`Total Registrations (3years)`),
+    Range = Max_Registrations - Min_Registrations,
+    .groups = 'drop'
+  )
+
+# Join the range information with the wide format registration counts
+registration_counts_wide <- registration_counts_wide %>%
+  left_join(registration_range, by = "Chapter")
+
+# Rearrange columns to put Min, Max, and Range in the 2nd, 3rd, and 4th columns
+registration_counts_wide <- registration_counts_wide %>%
+  select(Chapter, Min_Registrations, Max_Registrations, Range, everything())
+
+# Export the final DataFrame to a CSV file
+write_csv(registration_counts_wide, "registration_counts_wide.csv")
+
+```

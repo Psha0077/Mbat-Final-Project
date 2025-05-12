@@ -1,0 +1,101 @@
+---
+title: "Members Dashboard"
+format: html
+editor: visual
+---
+
+## Weekly Log - Members Dashboard
+
+**Introduction**
+
+EducatePlus needs a dashboard to report the figures of their member numbers for the sake of their weekly and monthly reporting, keeping track of member-specific metrics.
+
+**Approach**
+
+We followed an iterative process to build the Members Dashboard.
+
+**Step 1: Stakeholder Identification & Requirements Gathering**
+
+We sent out surveys to the EducatePlus team members to understand their reporting requirements in order to identify the relevant stakeholders and their different use cases.
+
+Relevant stakeholders: Memberships team, CEO & Business Owner.
+
+| Requirement/ Metric \| Description \|
+
+| **Members by Membership Type** \| Helps in understanding the distribution of different membership categories, allowing EducatePlus to tailor services and resources to specific member types.. \|
+| **Lapsed/Cancelled Member Numbers**: \| Tracks the effectiveness of recruitment efforts and indicates the growth of the organization. \|
+| **Member Numbers to Budget** \| Ensures that membership growth aligns with financial targets, which is crucial for planning and sustainability. \|
+| **Membership by Gender** \| Provides insights into gender diversity within the organization, which can inform targeted initiatives to improve inclusivity. \|
+| **Membership by Age** \| Helps in understanding the age distribution, allowing for the development of programs and communications tailored to different age groups. \|
+| **Membership by Location (Chapter and Country)**: \| Enables EducatePlus to understand regional distribution and ensure that all areas are adequately supported and represented. \|
+| **Membership by Institution Type and School Classification** \| Helps in identifying which types of institutions are most engaged, allowing for targeted outreach and support. \|
+| **Member Interests** \| Provides data to create more personalized and engaging content, events, and resources, ultimately increasing member satisfaction and engagement. \|
+
+: Table 1: Members Dashboard Requirement
+
+**Step 2: Dashboard Wireframe & Feedback**
+
+Having understood the relevant stakeholders and their needs, we began by designing wireframe diagrams of the dashboard with the EducatePlus members, after multiple rounds of feedback, we came up with a final draft seen in Figure 1.
+
+![Image 1: Members Dashboard Wireframe diagram](Images/Member%20Dashboard%20Wireframe.png)
+
+**Step 3: Data Preparation**
+
+Having understood the Organization's needs, identifying stakeholders and agreeing upon the final dashboard design, we began implementing it. The current staging database is a Google Sheet consisting 19 columns across multiple variables. Reporting the needed metrics required the addition of rows. This was done with the help of the IT team from EducatePlus.
+
+| Column in Existing Staging Database (Google Sheet) | Column in New Staging Database | Description                                                                                                |
+|---------------------|------------------|------------------------------------|
+| Contact Name                                       | Contact Name                   | Full name of the member or Organization attached to a membership                                           |
+| Membership Type                                    | Membership Type                | Category of membership held by the individual.                                                             |
+| Start Date                                         | Start Date                     | Membership start date                                                                                      |
+| Status                                             | Status                         | Current status of the membership (New, Current, Grace, Expired or Cancelled)                               |
+| Primary/Inherited?                                 | Primary/Inherited?             | Indicates if the membership type is primary or has been inherited from an existing organization membership |
+| Institution Type                                   | Institution Type               |                                                                                                            |
+| Institution Type 2                                 | Institution Type 2             |                                                                                                            |
+| Institution Type 3                                 | Institution Type 3             |                                                                                                            |
+| Institution Type 4                                 | Institution Type 4             |                                                                                                            |
+| Chapter                                            | Chapter                        | Regional chapter the member is affiliated with                                                             |
+| Date Joined                                        | Date Joined                    | The date the individual became a member                                                                    |
+| Date Pack sent                                     | Date Pack sent                 | Date when the welcome or membership pack was sent                                                          |
+| Regional                                           | Regional                       | Indicates if the member is part of a regional group                                                        |
+| Contact Type                                       | Contact Type                   | Type of contact (Individual or organization).                                                              |
+| Organization Name                                  | Organization Name              | Name of the organization associated with the contact                                                       |
+| is Regional                                        | is Regional                    | Flag indicating regional affiliation                                                                       |
+| City                                               | City                           | City where the member or organization is located.                                                          |
+| State                                              | State                          | State or province where the member or organization is located.                                             |
+| Country                                            | Country                        | Country where the member or organization is based                                                          |
+|                                                    | Join Date                      | Date the member joined the organization                                                                    |
+|                                                    | Contact ID                     | Unique identifier for the contact in the database                                                          |
+|                                                    | Gender                         | Gender of the member                                                                                       |
+|                                                    | Birth Year                     | Year of birth of the member                                                                                |
+|                                                    | Age                            | Calculated age of the member based on birth year                                                           |
+|                                                    | Special Interests              | Interests of each member across the 9 pillars of EducatePlus                                               |
+|                                                    | Admissions                     | Pillar 1                                                                                                   |
+|                                                    | Alumni                         | Pillar 2                                                                                                   |
+|                                                    | Community Relations            | Pillar 3                                                                                                   |
+|                                                    | Events                         | Pillar 4                                                                                                   |
+|                                                    | Fundraising                    | Pillar 5                                                                                                   |
+|                                                    | International Recruitment      | Pillar 6                                                                                                   |
+|                                                    | Leadership                     | Pillar 7                                                                                                   |
+|                                                    | Marketing & Communication      | Pillar 8                                                                                                   |
+|                                                    | People & Culture               | Pillar 9                                                                                                   |
+
+: Table 2: Variables in the existing Members Dashboard and additional variables included in the staging database
+
+**Step 4: Dashboard Building & Testing**
+
+We built the dashboard and this is how it looks.
+
+![Image 3: Member Dashboard Page 1](Images/Member%20Dashboard%20Page%201.png)
+
+![Image 4: Member Dashboard Page 2](Images/Member%20Dashboard%20Page%202.png)
+
+**Challenges Faced**
+
+1.  There is an issue with our current members count. The number we are getting is a lot lower than that being used by the current IT dashboard. This is due to the fact that the current dashboard counts in the total cancelled members as well. We are currently in talks with the team to discuss this formula.
+
+We fixed the issue of the current dashboard numbers as we sent them the duplicate values as well as missing ones, and they imported it directly from the Civi CRM.
+
+2.  We have noticed that the dashboard keeps crashing requiring us to manually reset each visualization and metric. We have removed the date dimension as a way to solve this and also ensured to re-connect the data source. This should solve the problem.
+
+3.  The dataset contained numerous null values. The rows with null values were excluded from the final dashboard using a filter in Looker Studio itself to ensure consistency in the data. This exclusion was necessary to avoid misrepresentation of memberships and maintain clean reporting.

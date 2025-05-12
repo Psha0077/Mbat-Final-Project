@@ -1,0 +1,170 @@
+---
+title: "Membership Report Initial Summary"
+author: "Akanksha Shridharani and Pranav Shankaran"
+date: "2024-07-28"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: spacelab
+---
+
+```{r cars, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(visdat)
+```
+
+This report provides an initial summary of the membership data, focusing on understanding the data structure, identifying key variables, and preparing for further analysis. The aim is to align the data analysis with the organization's objectives, specifically enhancing member engagement, retention, and the effectiveness of the dashboards that will be used by various teams.
+
+# Current System Study
+
+```{r ida, warning=FALSE, message=FALSE}
+member <- read_csv("July_24_Full member report.csv")
+glimpse(member)
+sapply(member, class)
+
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Load necessary library
+library(dplyr)
+library(kableExtra)
+# Create the data frame
+df <- data.frame(
+  Variable_Name = c("First Name", "Last Name", "Gender", "Birth Date", "Age",
+                     "Contact Job title", "Organization Name", "Membership Type",
+                     "Date joined", "Status", "Email", "Phone", "Postal Code",
+                     "State/Province", "Country", "Chapter", "Institution Type", 
+                     "Special Interests"),
+  Description = c("The first name of the member.", "The last name of the member.",
+                   "The gender of the member.", "The birth date of the member.",
+                   "The age of the member.", "The job title of the member within their organization.",
+                   "The name of the organization where the member is employed.",
+                   "The type of membership the member holds.", "The date when the member joined.",
+                   "The current status of the membership (e.g., current, expired).",
+                   "The email address of the member.", "The phone number of the member.",
+                   "The postal code of the member's address.", "The state or province of the member's address.",
+                   "The country of the member's address.", "The chapter or local group the member belongs to.",
+                   "The type of institution where the member is employed (e.g., Catholic School, Girl's School).",
+                   "The specific interests of the member related to their professional and personal development."),
+  Data_Type = c("Character", "Character", "Character", "Character", "Numeric",
+                "Character", "Character", "Character", "Character", "Character",
+                "Character", "Character", "Character", "Character", "Character",
+                "Character", "Character", "Character"),
+  Unique_Values = c(892, 1786, 3, 350, 57, 1177, 585, 5, 1040, 3, 2293, 1742, 404, 21, 9, 7, 43, 201),
+  stringsAsFactors = FALSE
+)
+
+kable(df, format = "markdown", col.names = c("Variable Name", "Description", "Data Type", "Unique Values"))
+
+```
+
+
+The dataset under analysis includes comprehensive information on members, covering demographics, professional affiliations, membership status, and contact details. With 2,314 records and 18 variables, the data offers a rich source for understanding member behavior and engagement patterns. The dataset's structure is mostly character-based, with one numeric variable (Age), which provides opportunities for both categorical and numerical analysis. Below is a detailed exploration and analysis of the dataset.
+
+## Unique values in the data
+
+```{r ida-2, warning=FALSE, message=FALSE}
+# Unique values in each column
+sapply(member, function(x) length(unique(x)))
+
+```
+
+We calculate the number of unique values in each column using sapply with a custom function. This helps identify the diversity of data within each column, which can be useful for detecting potential categorical variables or issues like excessive duplication.
+
+
+## Duplicated Values
+
+```{r}
+# Count duplicate rows
+sum(duplicated(member))
+```
+
+In this case, there are 6 duplicate rows.
+
+## Missingness of the data
+
+```{r ida-3, warning=FALSE, message=FALSE}
+
+vis_dat(member)
+vis_miss(member)
+# Data types of each column
+
+
+```
+We use the visdat package to visualize the data types and missing values in the dataset.
+
+The vis_dat function provides a visual summary of the data types in each column.
+
+The vis_miss function generates a visualization of the missing values in the dataset.
+
+
+```{r EDA, message=FALSE, warning=FALSE}
+
+library(dplyr)
+library(ggplot2)
+
+# Calculate the percentage of missing values for each variable
+missing_values <- member %>%
+  summarise_all(~ mean(is.na(.))) %>%
+  gather(key = "variable", value = "missing_pct")
+
+# Plot the missing values
+ggplot(missing_values, aes(x = reorder(variable, -missing_pct), y = missing_pct)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  coord_flip() +
+  ylab("Percentage of Missing Values") +
+  xlab("Variable") +
+  ggtitle("Missing Values by Variable")
+
+```
+
+## Correlation Plot
+
+```{r EDA-2, message=FALSE, warning=FALSE}
+numeric_data <- member %>% dplyr::select_if(is.numeric)
+
+# Compute correlation matrix
+cor_matrix <- cor(numeric_data, use = "complete.obs")
+
+# Plot the correlation matrix
+library(corrplot)
+corrplot(cor_matrix, method = "circle")
+
+```
+
+The corrplot function visualizes the correlation matrix. Given that there is only one numeric variable, the plot will indicate a perfect correlation (correlation coefficient = 1) of Age with itself.
+
+- **Strengths** 
+a) Comprehensive data collection on member demographics, engagement, and organizational affiliations.
+b) Data is readily available for analysis with clear categorical variables.
+Weaknesses
+- **Weakness**
+a) Presence of duplicate entries and missing values that need to be addressed.
+b) Lack of standardized data formats for some variables, leading to inconsistencies.
+- **Opportunities**
+a) Implementing more detailed tracking of member engagement (e.g., tracking attendance at events).
+b) Enhancing data visualization with dashboards tailored to specific stakeholder needs.
+- **Threats**
+a) Potential data breaches or compliance issues if data is not securely managed.
+b) Risk of outdated information if the data is not regularly updated.
+
+# Mapping Objectives with Dashboards
+
+The organization's objectives are centered around improving member engagement, understanding passive members, analyzing member retention rates, and creating a comprehensive dashboard that offers insights into these areas. The data exploration and initial analysis directly align with these goals, providing the foundation for creating targeted dashboards that will serve various stakeholders.
+
+## Stakeholder Needs and Data Relevance
+
+Key stakeholders include teams responsible for member engagement, retention, and reporting to upper management. The data analysis, particularly the focus on unique values, missing data, and duplicates, is crucial for developing dashboards that accurately reflect the current state of membership and identify areas for improvement.
+
+## Exploratory Data Analysis (EDA)
+
+The EDA was conducted to further understand the dataset, focusing on missing values and correlations. The missing values analysis revealed which variables are most affected, guiding the data cleaning process. Although "Age" is the only numeric variable, the correlation analysis sets the stage for more complex analyses as additional numeric variables are introduced or derived.
+
+## Dashboard Development
+
+The insights gained from the initial data analysis will be instrumental in developing dashboards that address the specific needs of stakeholders. For example, understanding the geographic distribution of members, analyzing engagement rates, and tracking retention metrics will all be crucial components of the final dashboards. These dashboards will be designed to provide actionable insights, enabling stakeholders to make informed decisions and implement effective strategies for member engagement and retention.
+
+In summary, the solutions we provided to answer these were to create **Member Dashboard**, **Events/Attendance Dashboard**, **Lapsed Member Dashboard** and **Turnover Dashboard**.
+

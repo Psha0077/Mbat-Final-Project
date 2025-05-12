@@ -1,0 +1,423 @@
+---
+title: "Enhancing Data Dashboards for Streamlined Interaction and Clear Data Insights"
+author:
+- name: Professor Marie Curie
+  degrees: Nobel Prize, PhD
+  email: mcurie.notreal@gmail.com
+- name: Dr Pierre Curie
+  degrees: Nobel Prize, PhD
+phone: (03) 9905 2478
+email: BusEco-Econometrics@monash.edu
+organization: Acme Corporation
+bibliography: references.bib
+format: report-pdf
+---
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.align = "center")
+```
+
+```{r}
+library(knitr)
+library(kableExtra)
+```
+
+# Abstract
+
+In the modern era of data-driven decision-making, organizations must leverage real-time insights to monitor objectives, measure progress, and make informed strategic decisions. Educate Plus, a professional association dedicated to supporting education advancement professionals, manages a broad and diverse membership across multiple regions. As the organization grows, so does the need for timely and accurate data to guide operational decisions. However, they faced challenges in tracking key metrics such as membership engagement, retention, and event attendance, due to fragmented and manual reporting processes.
+
+To address these issues, this project focused on developing three interactive dashboards for them: Members Dashboard, Membership Dashboard, and Events Attendance Dashboard to provide real-time, actionable insights. The dashboards to be created were designed to streamline decision-making processes and support various departments within the organization, including marketing, finance, and events.
+
+The dashboards utilize data from membership and event database to provide real-time insights. The tools used in the analysis include CiviCRM platform for data extraction, and Looker Studio for visualization.
+
+The dashboards were designed for the ability to track trends in members, their engagement across the different events. The ability to use the dashboard interactively not only provide Educate Plus with immediate operational benefits but also pave the way for advanced data strategies, help them make informed, data-driven decisions, while establishing a solid foundation for future improvements in data management and reporting processes.
+
+# Introduction
+
+## Background
+
+```{r}
+knitr::include_graphics("Images/logo.jpeg")
+```
+
+In today’s data-driven environment, organizations must leverage real-time insights to make informed decisions, optimize options, and monitor performance. Educate Plus (@educateplus) is a professional association supporting education advancement professionals across Australasia. Members of the organization work in admissions, fundraising, alumni relations, and marketing, and have access to professional development, networking opportunities, and resources. Educate Plus is committed to managing member engagement and ensuring the success of its events.
+
+As the organization has expanded, managing membership and event data has become more challenging. Educate Plus uses CiviCRM (@civicrm), a customer relationship management (CRM) platform designed to manage member data and interactions. With the help of this tool, the organization can easily track key performance indicators (KPIs) like member retention, engagement, and event participation.
+
+To address these limitations, this project focuses on developing three interactive dashboards using Looker Studio (@google_2016). This data visualization tool simplifies the presentation of complex data and provides real-time insights. The dashboards—Members Dashboard, Lapsed Members Dashboard, and Events Attendance Dashboard are designed to deliver clear, actionable insights that will help Educate Plus make more informed decisions.
+
+Data-driven decision-making is crucial for organizations, enabling them to effectively leverage information and improve operational efficiency (@davenport2017competing). For Educate Plus, monitoring real-time data from its membership base is vital for improving member retention, engagement, and satisfaction. Additionally, tracking event participation through real-time data offers valuable insights into member involvement, allowing them to tailor its event planning and outreach efforts to better meet the needs of its members (@trochlil2016mission).
+
+Integrating these dashboards into Educate Plus's daily operations will enable them to better understand its members, monitor trends, and respond to data-driven insights promptly. These enhancements are expected to improve not only their operational efficiency but also lay the groundwork for more refined data strategies in the future.
+
+## Goals & Objectives
+
+Defining the goals of the project and how they are important to the stakeholders
+
+## Methodology
+
+### Data Collection & Processing
+
+Once the organization’s goals were clearly defined, our next step was to analyze the existing reporting framework to determine whether these objectives could be met with the current data flow or if more substantial changes were required. This involved a thorough review of the data flow from CiviCRM, the CRM platform utilized by Educate Plus, to the original EP Membership Summary Dashboard. The current data flow is outlined in Image 1 below.
+
+**\[Insert Image current_reporting_framework.png here\]**
+
+As illustrated in Image 1, member data is initially captured via WordPress forms and stored within CiviCRM. The CRM platform then enriches this data through the generation of additional fields, such as unique Contact IDs, Membership Type, and Membership Status, facilitated by Application Programming Interfaces (APIs). Once processed, this data is exported to a Google Sheet, where additional pre-processing ensures the variables adhere to the correct format required by the dashboard. This Google Sheet serves as the primary data source for the EP Membership Summary Dashboard.
+
+While this framework provided useful snapshots of membership data, it lacked the depth of calculated metrics necessary for strategic decision-making, particularly in areas such as resource allocation and membership growth analysis. Table 1 below outlines the 19 variables used in the current staging database. However, as discussed later, these variables alone were insufficient to meet the organization’s broader objectives.
+
+```{r}
+
+library(knitr)
+library(kableExtra)
+
+# Create a data frame with the given columns
+old_table <- data.frame(
+  "Column Name" = c(
+    "Contact Name", 
+    "Membership Type", 
+    "Start Date", 
+    "Status", 
+    "Primary/Inherited?", 
+    "Institution Type", 
+    "Institution Type 2", 
+    "Institution Type 3", 
+    "Institution Type 4", 
+    "Chapter", 
+    "Date Joined", 
+    "Date Pack sent", 
+    "Regional", 
+    "Contact Type", 
+    "Organization Name", 
+    "is Regional", 
+    "City", 
+    "State", 
+    "Country"
+  ),
+  "Description" = c(
+    "Full name of the member or Organization attached to a membership",
+    "Category of membership held by the individual.",
+    "Membership start date",
+    "Current status of the membership (New, Current, Grace, Expired or Cancelled)",
+    "Indicates if the membership type is primary or has been inherited from an existing organization membership",
+    "Type of institution the member is associated with",
+    "Secondary type of institution",
+    "Third type of institution",
+    "Fourth type of institution",
+    "Regional chapter the member is affiliated with",
+    "The date the individual became a member",
+    "Date when the welcome or membership pack was sent",
+    "Indicates if the member is part of a regional group",
+    "Type of contact (Individual or organization).",
+    "Name of the organization associated with the contact",
+    "Flag indicating regional affiliation",
+    "City where the member or organization is located.",
+    "State or province where the member or organization is located.",
+    "Country where the member or organization is based"
+  )
+)
+
+# Generate the kable table
+# Generate the kable table with kableExtra styling
+kable(old_table, caption = "Table 1: Variables used in the staging database") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "responsive"))
+```
+
+### Limitations of the Current Variables
+
+As shown in Table 1, the existing variables primarily capture basic membership data but do not provide the critical insights needed to support the organization's strategic goals. Below are key examples illustrating these gaps:
+
+Lapsed/Cancelled Memberships: The absence of tracking for lapsed or cancelled memberships limits the organization’s ability to assess member retention rates and understand reasons for member attrition. Without these insights, it is challenging to evaluate the effectiveness of recruitment and retention strategies.
+
+Demographic Information: Key demographic data, such as age and gender, is not included, preventing the organization from analyzing the diversity of its membership base. This information is essential for tailoring communications and services to different demographic groups and ensuring inclusivity.
+
+Special Interests: There is no data capturing members’ specific interests, such as their involvement in EducatePlus's nine key pillars (e.g., Admissions, Alumni, Fundraising). Without these insights, it is difficult to personalize content, events, or resources based on individual member preferences, limiting the organization’s ability to foster deeper engagement.
+
+### Building the New Data Flow
+
+Recognizing the limitations of the current variables, we conducted a comprehensive review of all data points collected by the organization and identified additional variables that would fulfill the organization’s needs. This led to the development of a new data flow that introduced key metrics while restructuring the data collection process to be more flexible and comprehensive.
+
+The IT team at EducatePlus collaborated with us to design this new data flow, as depicted in Image 2 below.
+
+**\[Insert image of new dataflow here\]**
+
+In the new data flow, after data is captured in CiviCRM, it is extracted into two distinct Google Sheets. Google Sheet 1 contains membership data and serves as the source for both the Members Dashboard and the Memberships Dashboard, while Google Sheet 2 contains event attendance data and is used for the Events Dashboard. This separation of data sources allows for more focused analysis, ensuring that each dashboard provides specific insights relevant to its scope.
+
+Tables 2 and 3 detail the variables included in each Google Sheet.
+
+```{r}
+# Create a data frame with the columns and descriptions
+table_2 <- data.frame(
+  "Column Name" = c(
+    "Contact Name", 
+    "Membership Type", 
+    "Start Date", 
+    "Status", 
+    "Primary/Inherited?", 
+    "Institution Type", 
+    "Institution Type 2", 
+    "Institution Type 3", 
+    "Institution Type 4", 
+    "Chapter", 
+    "Date Joined", 
+    "Date Pack sent", 
+    "Regional", 
+    "Contact Type", 
+    "Organization Name", 
+    "is Regional", 
+    "City", 
+    "State", 
+    "Country", 
+    "Join Date", 
+    "Contact ID", 
+    "Gender", 
+    "Birth Year", 
+    "Age", 
+    "Special Interests", 
+    "Admissions", 
+    "Alumni", 
+    "Community Relations", 
+    "Events", 
+    "Fundraising", 
+    "International Recruitment", 
+    "Leadership", 
+    "Marketing & Communication", 
+    "People & Culture"
+  ),
+  "Description" = c(
+    "Full name of the member or Organization attached to a membership",
+    "Category of membership held by the individual.",
+    "Membership start date",
+    "Current status of the membership (New, Current, Grace, Expired or Cancelled)",
+    "Indicates if the membership type is primary or has been inherited from an existing organization membership",
+    "First classification of institution type",
+    "Second classification of institution type",
+    "Third classification of institution type",
+    "Fourth classification of institution type",
+    "Regional chapter the member is affiliated with",
+    "The date the individual became a member",
+    "Date when the welcome or membership pack was sent",
+    "Indicates if the member is part of a regional group",
+    "Type of contact (Individual or organization).",
+    "Name of the organization associated with the contact",
+    "Flag indicating regional affiliation",
+    "City where the member or organization is located.",
+    "State or province where the member or organization is located.",
+    "Country where the member or organization is based",
+    "Date the member joined the organization",
+    "Unique identifier for the contact in the database",
+    "Gender of the member",
+    "Year of birth of the member",
+    "Calculated age of the member based on birth year",
+    "Interests of each member across the 9 pillars of EducatePlus",
+    "Pillar 1: Admissions",
+    "Pillar 2: Alumni",
+    "Pillar 3: Community Relations",
+    "Pillar 4: Events",
+    "Pillar 5: Fundraising",
+    "Pillar 6: International Recruitment",
+    "Pillar 7: Leadership",
+    "Pillar 8: Marketing & Communication",
+    "Pillar 9: People & Culture"
+  )
+)
+
+# Generate the kable table with kableExtra styling
+kable(table_2, caption = "Table 2: Columns used in GoogleSheet 1. These columns are the source for the Members and Memberships Dashboards.") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "responsive"))
+```
+
+```{r}
+# Create a data frame with column names and descriptions
+events_dataset <- data.frame(
+  Column_Heading = c("Participant Name", "First Name", "Last Name", "Gender", 
+                     "Contact Job Title", "Organization Name", "Contact ID", 
+                     "Email", "City", "State/Province", "Country", "ID", 
+                     "Participant ID", "Event ID", "Status", "Role", "Fee Level", 
+                     "Participant Fee", "Registration Date", "Total Paid", 
+                     "Event Type", "Event Start Date", "Event End Date", "Chapter", 
+                     "Institution Type", "Participant Status", "Are You a Sponsor?", 
+                     "Half Day Workshops", "Full Day Workshop - Masterclass", 
+                     "Welcome Drinks Day 1", "Gala Dinner", "Awards Luncheon", 
+                     "Gala Dinner Day 3", "Which Topics Interest You for This Event?"),
+  
+  Description = c("Full name of the event participant", "Participant's first name", 
+                  "Participant's last name", "Participant's gender identification", 
+                  "Job title of the participant", "Name of the organization the participant is associated with", 
+                  "Unique identifier for the participant's contact details", 
+                  "Email address of the participant", "City where the participant is based", 
+                  "State or province of the participant", "Country of the participant", 
+                  "General ID of the participant record", "Unique identifier for the participant within the event", 
+                  "Unique identifier for the event the participant is registered for", 
+                  "Registration status of the participant (e.g., Registered, Attended)", 
+                  "Role of the participant in the event (e.g., Attendee, Speaker)", 
+                  "Category of fees applicable to the participant", 
+                  "Fee paid by the participant for the event", 
+                  "Date when the participant registered for the event", 
+                  "Total amount paid by the participant", "Type of the event (e.g., Workshop, Conference)", 
+                  "Date when the event starts", "Date when the event ends", 
+                  "Regional chapter or group associated with the event", 
+                  "Type of institution the participant represents (e.g., School, University)", 
+                  "Membership status of the participant (e.g., Member, Non-Member)", 
+                  "Indicates if the participant is an event sponsor", 
+                  "Indicates participation in half-day workshops", 
+                  "Indicates participation in full-day workshops or masterclasses", 
+                  "Indicates attendance at welcome drinks on Day 1 of the event", 
+                  "Indicates attendance at the gala dinner", 
+                  "Indicates attendance at the awards luncheon", 
+                  "Indicates attendance at the gala dinner on Day 3", 
+                  "Topics of interest specified by the participant for the event")
+)
+
+# Display the data frame as a responsive kable object
+kable(events_dataset, col.names = c("Column Heading", "Description"), 
+      caption = "Table 3:Columns housed in GoogleSheet 2. This acts as the source for the Event Attendees Dashboard.") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+                full_width = F, position = "left")
+```
+
+### Dashboard Development
+
+Once the new data flow was established, we developed three key dashboards to address the organization’s requirements: the Members Dashboard, the Memberships Dashboard, and the Events Dashboard.
+
+We used an iterative approach to build each dashboard involving the following steps; We understood their requirements and purpose, Identified the key stakeholders, We built wireframes of each dashboard to show how each metric would be displayed, received feedback from the team, built the dashboard and finally tested it. Once this was done, it was made live and deployed.
+
+**\[Insert Iterative Approach here\]**
+
+### Dashboard Development; The Members Dashboard
+
+The Members Dashboard is a critical tool that provides an in-depth view of the organization's current membership landscape. It was designed to address specific organizational goals, such as tracking membership growth, demographic diversity, and engagement levels. The dashboard presents a variety of metrics, including the number of new members, expired memberships, and growth rates, to help stakeholders make informed decisions about resource allocation and member engagement strategies.
+
+**\[Insert images of Members dashboard here\]**
+
+Key components of the Members Dashboard include:
+
+**Total Members, New Members (YTD), and Expired Members (YTD)** At the top of the dashboard, key figures such as the total number of members, new members acquired year-to-date (YTD), and expired memberships are prominently displayed. These figures provide an at-a-glance understanding of the organization's current membership base and its trends throughout the year. Monitoring the number of expired memberships alongside new memberships allows EducatePlus to evaluate the effectiveness of recruitment strategies and address any retention issues promptly.
+
+**Growth (%)** The growth gauge gives an immediate visual representation of membership growth over a selected period. A percentage growth indicator allows the organization to assess whether it is meeting its growth targets and make necessary adjustments to its recruitment and retention efforts. For example, if growth is below expectations, targeted campaigns may be developed to boost new memberships.
+
+**Age Distribution** The age distribution pie chart provides a breakdown of the membership across various age groups, such as 19-35, 36-50, and 51-65+. This information is crucial for ensuring that the organization's services and communications are tailored to meet the needs of different age demographics. Understanding the age distribution also helps in creating targeted outreach campaigns, events, and programs for different segments of the membership base.
+
+**Gender Distribution** The gender distribution chart offers a quick visualization of the percentage of male and female members within the organization. With 82% of the members identified as female and 18% as male, this information can help the organization assess its inclusivity efforts and identify opportunities to engage underrepresented demographics. Gender distribution insights are important for understanding how membership reflects the broader industry demographic and for ensuring diversity in both participation and leadership within the organization.
+
+**New Memberships vs. Target by Membership Type** This bar chart compares the current year’s count of new memberships with the organization's target growth rate, set at 11%. It categorizes the data by membership types (e.g., AU Corporate Full Member, AU Individual Member). By showing whether each membership type is meeting its growth target, this chart helps the organization pinpoint areas that require more recruitment effort or areas where membership growth is particularly strong. This is essential for prioritizing recruitment resources and determining the success of different membership categories.
+
+**Historic Trend of New Members** The historical trend line chart tracks the number of new members over the years (2013-2024), helping the organization evaluate long-term membership trends. This allows stakeholders to assess the impact of different membership drives or external factors on recruitment rates. For example, the chart might highlight peaks in new memberships following specific outreach initiatives or in response to major industry events.
+
+**Our Members at a Glance (Regional Distribution)** This bar chart breaks down membership across various regional chapters, including regions like VIC-TAS, NSW-ACT, and WA. Regional distribution insights allow EducatePlus to allocate resources efficiently and ensure that all chapters are supported based on their membership size. This data is also critical for regional planning, such as organizing events and outreach initiatives in chapters that may have lower representation.
+
+**Membership Status** The pie chart of membership status provides a breakdown of the overall membership by status: New, Grace, Cancelled, Expired, and Current. The organization can use this information to monitor its retention efforts and understand the current distribution of active versus inactive members. A large proportion of active or current members suggests strong member engagement, while a growing number of expired or cancelled memberships may indicate potential retention issues.
+
+**Membership Type Distribution** The bar chart for membership type breaks down the membership base by categories such as AU Corporate Full Member, AU Regional Full Member, and NZ Corporate Full Member. This chart provides insights into which membership categories are most popular, allowing the organization to evaluate the effectiveness of different membership offerings. For example, if corporate memberships are growing while individual memberships lag, EducatePlus may need to reassess the value proposition for individuals.
+
+**Members by Institution Type** This section shows a breakdown of members by the type of institution they are affiliated with, such as Independent School, Catholic School, Anglican School, CoEd, and more. This is crucial for identifying which institution types are most engaged with EducatePlus and where outreach efforts need to be intensified. For instance, if a high proportion of members come from Independent Schools, EducatePlus can create specialized content and resources tailored to these institutions’ needs.
+
+**Member Interests** The member interests bar chart visualizes the specific areas of interest among members across the nine pillars of EducatePlus. Admissions, Alumni, Marketing & Communications, Community Relations, Leadership, Events, People & Culture and Fundraising. This information enables the organization to deliver targeted content, webinars, and events that cater to the top interests of its members or when expanding into new international markets. For example, with nearly 48% of members expressing an interest in Admissions, EducatePlus can prioritize resources in this area to ensure continued engagement.
+
+### Dashboard Development; The Membership Dashboard
+
+### Dashboard Development; The Events Dashboard
+
+The Events Dashboard is designed to provide detailed insights into EducatePlus’s event performance, including metrics such as total events held, registrations, attendance rates, and revenue generated from different events. This dashboard plays a crucial role in understanding how events contribute to organizational engagement and revenue, as well as tracking the success of various events across different chapters and member groups.
+
+The key elements of the Events Dashboard are:
+
+**Total Events, Registrations, and Attended Events** These key figures provide a high-level overview of EducatePlus’s event activity. Total Events displays the number of events held, while Registrations captures the total number of registrations across all events. Attended Events shows the actual attendance figures, allowing stakeholders to compare registration and attendance rates and assess engagement levels.
+
+**Attendance Rate (%)** The attendance rate is an important metric that shows what percentage of registrants actually attended the events. A low attendance rate might indicate issues such as scheduling conflicts or insufficient member interest in certain events, signaling the need for adjustments in event timing, format, or promotion strategies.
+
+**Revenue Generated** The dashboard tracks revenue in various currencies (AUD, NZD, and USD), allowing the organization to measure the financial success of its events. Understanding which events generate the most revenue helps guide future event planning and resource allocation. Additionally, pending revenue figures highlight amounts that are yet to be collected, providing insight into the financial pipeline and expected future income.
+
+**Gender Ratio** The gender ratio pie chart illustrates the proportion of male and female attendees at events. This demographic data is crucial for ensuring inclusivity and understanding how different gender groups are engaging with the organization's events. With a breakdown showing 58.3% female and 41.7% male attendees, this data allows EducatePlus to assess whether certain events appeal more to specific demographics.
+
+**Attendee Breakdown** The attendee break-up pie chart shows the types of attendees, including members, previous members, mailing list contacts, and fellows. This breakdown is essential for identifying how different groups of stakeholders are engaging with EducatePlus events and targeting future outreach efforts accordingly. For example, a high number of lapsed members attending events could signal an opportunity to win them back through targeted re-engagement efforts.
+
+**Chapter-Wide Events and Revenue** This table provides a chapter-wise breakdown of the number of events held, total registrations, and revenue generated across different chapters, including NSW-ACT, QLD, VIC-TAS, WA, NZ, and more. By comparing chapter performance, EducatePlus can identify regions with high engagement and those requiring more support or resources. Additionally, chapter-specific data enables tailored event planning to meet the unique needs of each region.
+
+**Year-over-Year (YoY) Events & Registrations** The YoY chart tracks the number of events and registrations over the years (2015-2025), allowing the organization to identify trends in event activity and engagement. Spikes or declines in event participation can be analyzed in relation to external factors such as economic changes, industry trends, or organizational initiatives, helping to refine event strategies moving forward.
+
+**Monthly Events Breakdown** This chart shows the number of events held and registrations per month, providing insights into the seasonal or cyclical nature of event engagement. For example, the chart reveals peak event activity in May, with 86 events and high registration numbers, indicating that May might be an optimal time for scheduling important events.
+
+**Top 20 Events by Registrations and Revenue** These tables lists the top 20 events by total registrations and Revenue, showing which events attracted the highest number of attendees and Revenue. By understanding which topics or formats drive the most registrations and Revenue, EducatePlus can prioritize similar events in the future to maximize engagement.
+
+**Participant Registration Status** The registration status table provides granular data on individual participants, including their chapter, email, and number of events registered for. This level of detail helps EducatePlus track participation at a personal level and follow up with participants who may need assistance with registration or payment.
+
+**Member Engagement Page** In the third section of the Events Dashboard, two key tables show Total Registrations per Participant and Total Available Events by chapter. These tables can be exported into an Excel sheet for further analysis, where thresholds can be set by the user to classify each participant's engagement level as Low, Moderate, or High. The classification is calculated as a percentage, comparing the number of events attended by a participant to the total available events.
+
+Once exported to Excel, the following steps occur:
+
+**Threshold Setting** Users can set thresholds for Low, Moderate, and High Engagement based on their specific criteria. For example, a participant attending less than 20% of available events might be classified as "Low Engagement," whereas attending more than 80% would classify as "High Engagement."
+
+**Formulae for Classification** Predefined formulae calculate engagement levels by comparing the number of events attended to the total available events per participant. This enables EducatePlus to easily identify highly engaged members and those who may require additional outreach or encouragement to participate more actively.
+
+By utilizing this tool, EducatePlus can effectively segment its membership and tailor its engagement strategies to different levels of participation. High-engagement members might be prioritized for leadership roles or targeted for special opportunities, while low-engagement members could be the focus of retention efforts.
+
+## KPIs and Analytical Choices
+
+Detailing on how we are gonna implement the KPIs
+
+## Challenges Encountered
+
+EG - Null values, looker studio issue, CIVI crm data capture
+
+# Results
+
+## Dashboard Overview
+
+Screenshots of the dashboard
+
+## Insights
+
+# Discussion
+
+## Project Success
+
+Reflecting on how the dashboard met the goals & objectives
+
+## Impact on Educate Plus Operations
+
+How the company is gonna use the dashboard for decision making
+
+## Limitations
+
+Throughout the development of this project, several limitations were identified that need to be addressed to enhance the functionality and analytical power of the dashboard system. While the current dashboards offer substantial insights into member activity, engagement, and event attendance, there are areas where more advanced tools and methodologies could significantly improve both the scope and depth of analysis.
+
+#### 1. **Need for More Powerful Dashboard Tools**:
+
+While LookerStudio has served as a valuable platform for the creation of dashboards, it has limitations when it comes to handling complex metrics and conducting predictive analytics. This is primarily due to LookerStudio’s lack of advanced computational capabilities, such as the re-aggregation of metrics or integration with more sophisticated data processing tools like Python or R.
+
+-   **Advanced Metric Calculations**: In LookerStudio, complex re-aggregations or layered metrics are difficult to calculate. However, Power BI or Tableau, when connected with Python or R, can handle much more complex calculations. For example, integrating with Python would allow for real-time metric recalculations based on user-defined parameters, something LookerStudio lacks.
+
+-   **Predictive Analytics**: In addition to handling more advanced metrics, tools like Python and R would allow us to integrate predictive analytics into the dashboards. With Python, we could develop models that predict membership renewal rates, identify members at risk of cancellation, or even forecast event attendance based on historical trends. Examples of predictions include:
+
+    -   **Predicting Membership Churn**: By analyzing past member behavior and engagement, we could predict which members are at risk of not renewing their membership.
+
+    -   **Attendance Forecasting**: Based on historical attendance data, we could forecast the expected number of attendees for upcoming events, allowing for more efficient resource allocation.
+
+    -   **Engagement Scoring**: With machine learning algorithms in R, we could predict which members are likely to become highly engaged based on their past interaction patterns and member attributes.
+
+Without more powerful tools, these advanced analyses remain out of reach in LookerStudio, limiting the depth of insights that can be derived from the data.
+
+#### 2. **Data Blending Constraints**:
+
+Another limitation in LookerStudio is the way it handles data blending. While the platform does allow for blending between datasets, the functionality is somewhat limited compared to more robust systems. LookerStudio’s blending is similar to using pivot tables in Excel, and while it can combine data from multiple sources, it cannot perform more advanced data lookups or reference external datasets in a meaningful way.
+
+For instance, when blending members' data and event attendance data, LookerStudio matches rows based on common identifiers (e.g., John Doe’s contact ID). While it can show John Doe's event attendance, it cannot reference an external dataset to show the number of available events John Doe could have attended. This prevents a more comprehensive understanding of member engagement, as we can only see what members have attended, not what opportunities they may have missed. In a more sophisticated tool, a lookup function could allow us to reference event availability data and provide a clearer picture of the extent to which each member is engaging with available resources.
+
+#### 3. **Partial Picture of Engagement Levels**:
+
+The engagement metric as it stands is limited to evaluating event attendance, which only tells part of the story. While it is useful for understanding how members are engaging with organizational events, there is still much to be done in terms of measuring overall engagement, which includes other interactions with the organization, such as communication, content consumption, participation in webinars, and more.
+
+-   **Industry Standard Comparisons**: In its current form, the dashboard does not benchmark member engagement against industry standards. Adding such comparisons would allow EducatePlus to see how their engagement metrics stack up against other organizations in the field, providing a relative measure of success.
+
+-   **Comprehensive Member Data**: Engagement should ideally be measured not just by event attendance but also by members' interactions with newsletters, their participation in forums, responses to surveys, etc. These factors, combined with attendance data, would provide a more complete view of member engagement. LookerStudio does not allow for the integration of these various data points as effectively as more advanced tools would.
+
+In conclusion, while the current dashboard provides valuable insights into membership trends and event engagement, the limitations in terms of data blending, advanced metric calculations, and engagement measurement prevent it from being a fully comprehensive tool. By incorporating more advanced platforms such as Power BI or Tableau with integrations into Python or R, we could overcome these limitations and build a more dynamic, insightful system that leverages the full scope of data available. This would allow EducatePlus to not only track current trends but also predict future ones, enhancing decision-making and resource allocation significantly.
+
+# Future Work
+
+## Potential Improvements
+
+# Conclusion & Reflections
+
+how we acheieved the goal
